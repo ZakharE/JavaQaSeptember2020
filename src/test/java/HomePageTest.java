@@ -1,42 +1,57 @@
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.aeonbits.owner.ConfigFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hamcrest.Matchers;
-import org.openqa.selenium.WebDriver;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import pages.AuthPage;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static constants.SocialNetworks.TG;
+import static constants.SocialNetworks.VK;
 
-public class HomePageTest {
+public class HomePageTest extends BaseTest {
 
-    private static final Logger logger = LogManager.getLogger(HomePageTest.class);
-    private static WebDriver driver;
-    private static final DomainConfig cfg = ConfigFactory.create(DomainConfig.class);
 
-    private final static String HOMEPAGE_TITLE = "Онлайн‑курсы для профессионалов, дистанционное обучение современным профессиям";
-
-    @BeforeTest
-    public void setUp() {
-        WebDriverManager.chromedriver().setup();
-        driver = WebDriverFactory.create(System.getProperty("browser"));
-        logger.info("Driver initiated");
-    }
-
-    @Test
+    @Test(description = "Check that info saved correctly in 'About' section")
     public void openHomePage() {
-        driver.get(cfg.hostname());
-        logger.info("Main page was open");
-        assertThat(driver.getTitle(), Matchers.equalTo(HOMEPAGE_TITLE));
-    }
+        AuthPage authPage = new AuthPage(driver);
+        String city = "Санкт-Петербург";
+        String country = "Россия";
+        String englishLevel = "Начальный уровень (Beginner)";
+        String workSchedule = "Полный день";
+        String lastName = "Test";
+        String company = "Компания";
+        String position = "Должность";
+        String gender = "Мужской";
 
-    @AfterTest
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-            logger.info("Driver was closed");
-        }
+        authPage
+                .clickLoginButton()
+                .signUp(UserConfig.LOGIN, UserConfig.PASSWORD)
+                .goToAboutSection()
+                .fillLastName(lastName)
+                .selectCountry(country)
+                .selectCity(city)
+                .selectEnglishLevel(englishLevel)
+                .selectWorkSchedule(workSchedule)
+                .inputContact(0, VK)
+                .addContact()
+                .inputContact(1, TG)
+                .selectGender(gender)
+                .inputCompany(company)
+                .inputCompanyPosition(position)
+                .save();
+        driver.close();
+
+        driver = createNewSession();
+        authPage = new AuthPage(driver);
+        authPage
+                .clickLoginButton()
+                .signUp(UserConfig.LOGIN, UserConfig.PASSWORD)
+                .goToAboutSection()
+                .assertLastNameIs(lastName)
+                .assertCityIs(city)
+                .assertCountryIs(country)
+                .assertEnglishLevelIs(englishLevel)
+                .assertWorkScheduleIs(workSchedule)
+                .assertCompanyIs(company)
+                .assertGenderIs(gender)
+                .assertCompanyPositionIs(position)
+                .assertHasContact(1, VK)
+                .assertHasContact(0, TG);
     }
 }
