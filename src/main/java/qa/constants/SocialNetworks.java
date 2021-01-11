@@ -1,4 +1,4 @@
-package constants;
+package qa.constants;
 
 public enum SocialNetworks {
     VK( "VK", "vk.com"),
