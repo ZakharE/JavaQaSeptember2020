@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 @Component
 public class BlogPage {
+    private final By addToFavoriteButton = By.cssSelector("div[class='blog__counters-item blog__counters-item_bookmark']");
+    private final By blogPost = By.cssSelector("div[class='blog-post']");
     @Autowired
     private WebDriver driver;
 
@@ -19,7 +21,7 @@ public class BlogPage {
     }
 
     public void addFirstPostToFavorites() {
-        WebElement post = driver.findElement(By.cssSelector("div[class='blog-post']"));
-        post.findElement(By.cssSelector("div[class='blog__counters-item blog__counters-item_bookmark']")).click();
+        WebElement post = driver.findElement(blogPost);
+        post.findElement(addToFavoriteButton).click();
     }
 }
