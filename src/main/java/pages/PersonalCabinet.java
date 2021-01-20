@@ -1,6 +1,7 @@
 package pages;
 
 import constants.SocialNetworks;
+import io.qameta.allure.Step;
 import org.hamcrest.Matchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,49 +27,59 @@ public class PersonalCabinet extends BasePage {
     private static final String buttonTitlePlaceHolder = "button[title='%s']";
     private final String contactValuePlaceholder = "id_contact-%s-value";
     private final By cityField = By.xpath("//input[@name='city']/../..");
+    private final String workSchedulePlaceHolder = "//input[@title='%s']/..";
+    private final String contactsPlaceholder = "//span[contains(text(),\"Способ связи\")]/..";
+    private final By profileIcon = By.cssSelector("div.header2-menu__item-wrapper.header2-menu__item-wrapper__username");
+    private By myProfile;
 
     public PersonalCabinet(WebDriver driver) {
         super(driver);
     }
 
+    @Step("Go to profile section")
     public PersonalCabinet goToAboutSection() {
-        new WebDriverWait(driver, DEFAULT_AWAIT).until(elementToBeClickable(By.cssSelector("div.header2-menu__item-wrapper.header2-menu__item-wrapper__username"))).click();
-        driver.findElement(By.partialLinkText("Мой профиль")).click();
-        new WebDriverWait(driver, DEFAULT_AWAIT).until(urlContains("personal"));
+        getDriverWait().until(elementToBeClickable(profileIcon)).click();
+        myProfile = By.partialLinkText("Мой профиль");
+        driver.findElement(myProfile).click();
+        getDriverWait().until(urlContains("personal"));
         logger.info("Section 'Мой профиль' was opened");
         return this;
     }
 
+    @Step("Set last name '{lastName}'")
     public PersonalCabinet fillLastName(String lastName) {
-        WebElement element = new WebDriverWait(driver, DEFAULT_AWAIT).until(elementToBeClickable(lastNameField));
+        WebElement element = getDriverWait().until(elementToBeClickable(lastNameField));
         element.clear();
         element.sendKeys(lastName);
         logger.info("Last name set to '{}'", lastName);
         return this;
     }
 
+    @Step("Select country '{country}'")
     public PersonalCabinet selectCountry(String country) {
-        new WebDriverWait(driver, DEFAULT_AWAIT).until(elementToBeClickable(countryField)).click();
-        new WebDriverWait(driver, DEFAULT_AWAIT).until(elementToBeClickable(
+        getDriverWait().until(elementToBeClickable(countryField)).click();
+        getDriverWait().until(elementToBeClickable(
                 By.cssSelector(String.format(buttonTitlePlaceHolder, country)))).click();
 
-        new WebDriverWait(driver, DEFAULT_AWAIT).until(not(elementToBeClickable(By.cssSelector(String.format(buttonTitlePlaceHolder, "Не выбрано")))));
+        getDriverWait().until(not(elementToBeClickable(By.cssSelector(String.format(buttonTitlePlaceHolder, "Не выбрано")))));
         logger.info("Country was set to '{}'", country);
         return this;
     }
 
+    @Step("Select city '{city}'")
     public PersonalCabinet selectCity(String city) {
-        new WebDriverWait(driver, DEFAULT_AWAIT)
+        getDriverWait()
                 .until(elementToBeClickable(cityField))
                 .click();
-        new WebDriverWait(driver, DEFAULT_AWAIT).until(visibilityOfElementLocated(
+        getDriverWait().until(visibilityOfElementLocated(
                 By.cssSelector(String.format(buttonTitlePlaceHolder, city)))).click();
-        new WebDriverWait(driver, DEFAULT_AWAIT).until(not(elementToBeClickable(By.cssSelector(String.format(buttonTitlePlaceHolder, "Не выбрано")))));
+        getDriverWait().until(not(elementToBeClickable(By.cssSelector(String.format(buttonTitlePlaceHolder, "Не выбрано")))));
         logger.info("Country was set to '{}'", city);
 
         return this;
     }
 
+    @Step("Select english level '{level}'")
     public PersonalCabinet selectEnglishLevel(String level) {
         driver.findElement(englishLevelField).click();
         driver.findElement(By.cssSelector(String.format(buttonTitlePlaceHolder, level))).click();
@@ -77,15 +88,17 @@ public class PersonalCabinet extends BasePage {
         return this;
     }
 
+    @Step("Select work schedule '{schedule}'")
     public PersonalCabinet selectWorkSchedule(String schedule) {
-        driver.findElement(By.xpath(String.format("//input[@title='%s']/..", schedule))).click();
+        driver.findElement(By.xpath(String.format(workSchedulePlaceHolder, schedule))).click();
         logger.info("Schedule was set to '{}'", schedule);
         return this;
     }
 
+    @Step("Add contact '{contact.getName}'")
     public PersonalCabinet inputContact(int contactListNumber, SocialNetworks contact) {
         WebElement contactContainer = driver.findElement(By.cssSelector(String.format(contactFieldPostionPlaceHolder, contactListNumber)));
-        contactContainer.findElement(By.xpath("//span[contains(text(),\"Способ связи\")]/..")).click();
+        contactContainer.findElement(By.xpath(contactsPlaceholder)).click();
         contactContainer.findElement(By.cssSelector(String.format(buttonTitlePlaceHolder, contact.getName()))).click();
         contactContainer.findElement(By.id(String.format(contactValuePlaceholder, contactListNumber))).sendKeys(contact.getValue());
         logger.info("Contact '{}' was set to '{}'", contact.getName(), contact.getValue());
@@ -99,6 +112,7 @@ public class PersonalCabinet extends BasePage {
         return this;
     }
 
+    @Step("Select gender '{gender}'")
     public PersonalCabinet selectGender(String gender) {
         Select dropdownList = new Select(driver.findElement(genderField));
         dropdownList.selectByVisibleText(gender);
@@ -106,6 +120,7 @@ public class PersonalCabinet extends BasePage {
         return this;
     }
 
+    @Step("Input company '{company}'")
     public PersonalCabinet inputCompany(String company) {
         WebElement element = driver.findElement(companyField);
         element.clear();
@@ -115,6 +130,7 @@ public class PersonalCabinet extends BasePage {
         return this;
     }
 
+    @Step("Input company position '{position}'")
     public PersonalCabinet inputCompanyPosition(String position) {
         WebElement element = driver.findElement(companyPositionField);
         element.clear();
@@ -124,8 +140,9 @@ public class PersonalCabinet extends BasePage {
         return this;
     }
 
+    @Step("Save changes")
     public void save() {
-        new WebDriverWait(driver, DEFAULT_AWAIT).until(elementToBeClickable(saveButton))
+        getDriverWait().until(elementToBeClickable(saveButton))
                 .click();
         new WebDriverWait(driver, DEFAULT_AWAIT*3).until(urlContains("skills"));
 
@@ -133,7 +150,7 @@ public class PersonalCabinet extends BasePage {
     }
 
     public PersonalCabinet assertCityIs(String city) {
-        String elementText = new WebDriverWait(driver, DEFAULT_AWAIT).until(elementToBeClickable(
+        String elementText = getDriverWait().until(elementToBeClickable(
                 cityField)).getText();
         assertThat(elementText, containsString(city));
         return this;
@@ -173,7 +190,7 @@ public class PersonalCabinet extends BasePage {
 
     public PersonalCabinet assertGenderIs(String gender) {
         Select dropdownList = new Select(driver.findElement(genderField));
-        assertThat(dropdownList.getAllSelectedOptions(), Matchers.<WebElement>hasSize(1));
+        assertThat(dropdownList.getAllSelectedOptions(), Matchers.hasSize(1));
         assertThat(dropdownList.getFirstSelectedOption().getText().trim(), equalTo(gender));
         return this;
     }

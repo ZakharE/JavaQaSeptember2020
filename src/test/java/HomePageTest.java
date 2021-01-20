@@ -1,13 +1,16 @@
+import io.qameta.allure.Feature;
+import io.qameta.allure.Flaky;
 import org.testng.annotations.Test;
 import pages.AuthPage;
 
 import static constants.SocialNetworks.TG;
 import static constants.SocialNetworks.VK;
 
+
 public class HomePageTest extends BaseTest {
-
-
     @Test(description = "Check that info saved correctly in 'About' section")
+    @Feature("Personal cabinet")
+    @Flaky
     public void openHomePage() {
         AuthPage authPage = new AuthPage(driver);
         String city = "Санкт-Петербург";
@@ -28,9 +31,6 @@ public class HomePageTest extends BaseTest {
                 .selectCity(city)
                 .selectEnglishLevel(englishLevel)
                 .selectWorkSchedule(workSchedule)
-                .inputContact(0, VK)
-                .addContact()
-                .inputContact(1, TG)
                 .selectGender(gender)
                 .inputCompany(company)
                 .inputCompanyPosition(position)
