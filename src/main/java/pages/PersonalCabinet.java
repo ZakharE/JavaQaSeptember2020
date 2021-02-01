@@ -6,6 +6,7 @@ import org.hamcrest.Matchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -205,6 +206,13 @@ public class PersonalCabinet extends BasePage {
         assertThat(contactContainer.findElement(By.cssSelector("div.input")).getText().trim(), equalTo(contact.getName()));
         String fieldValue = getFieldValue(By.id(String.format(contactValuePlaceholder, contactListNumber)));
         assertThat(fieldValue, equalTo(contact.getValue()));
+        return this;
+    }
+
+    public PersonalCabinet assertLoggedInAs(String firstName) {
+        String nickName = getDriverWait().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("p.header2-menu__item-text__username")))
+                .getText().trim();
+        assertThat(nickName, equalTo(firstName));
         return this;
     }
 }

@@ -54,4 +54,14 @@ public class HomePageTest extends BaseTest {
                 .assertHasContact(1, VK)
                 .assertHasContact(0, TG);
     }
+
+    @Test(description = "Login in cabinet")
+    @Feature("Personal cabinet")
+    public void login() {
+        AuthPage authPage = new AuthPage(driver);
+        authPage
+                .clickLoginButton()
+                .signUp(UserConfig.LOGIN, UserConfig.PASSWORD)
+                .assertLoggedInAs("dsa");
+    }
 }
