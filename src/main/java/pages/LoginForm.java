@@ -1,5 +1,6 @@
 package pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -23,6 +24,7 @@ public class LoginForm extends BasePage{
         driver.findElement(passwordField).sendKeys(email);
     }
 
+    @Step("Sign up as {email}/{password}")
     public PersonalCabinet signUp(String email, String password) {
         inputEmail(email);
         inputPassword(password);

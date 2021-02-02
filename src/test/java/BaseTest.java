@@ -1,21 +1,22 @@
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Listeners;
 
+import java.net.URI;
+
+@Listeners({ScreenshotListener.class})
 public class BaseTest {
     protected static final Logger logger = LogManager.getLogger(HomePageTest.class);
     protected static WebDriver driver;
-    protected static final UserConfig cfg = ConfigFactory.create(UserConfig.class);
-
 
     @BeforeTest
     public void setUp() {
-       createNewSession();
+        createNewSession();
     }
 
     @AfterTest
@@ -26,12 +27,26 @@ public class BaseTest {
         }
     }
 
+    @lombok.SneakyThrows
     public WebDriver createNewSession() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("browserName", "chrome");
+        capabilities.setCapability("browserVersion", "85.0");
+        capabilities.setCapability("enableVNC", true);
+        capabilities.setCapability("enableVideo", true);
+        capabilities.setCapability("enableLogs", true);
+        driver = new RemoteWebDriver(
+                URI.create("http://localhost:4444/wd/hub").toURL(),
+                capabilities
+        );
+//        driver = new ChromeDriver();
         driver.manage().window().maximize();
-        driver.get(cfg.hostname());
+        driver.get(UserConfig.HOSTNAME);
         logger.info("Driver initiated");
+        return driver;
+    }
+
+    public static WebDriver getDriver() {
         return driver;
     }
 }
