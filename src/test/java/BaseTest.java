@@ -4,7 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 
 import java.net.URI;
@@ -14,7 +14,7 @@ public class BaseTest {
     protected static final Logger logger = LogManager.getLogger(HomePageTest.class);
     protected static WebDriver driver;
 
-    @BeforeTest
+    @BeforeMethod
     public void setUp() {
         createNewSession();
     }
@@ -39,7 +39,7 @@ public class BaseTest {
                 URI.create("http://localhost:4444/wd/hub").toURL(),
                 capabilities
         );
-//        driver = new ChromeDriver();
+
         driver.manage().window().maximize();
         driver.get(UserConfig.HOSTNAME);
         logger.info("Driver initiated");
