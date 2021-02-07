@@ -4,10 +4,10 @@ parameters{
 }
 node {
     stage('Checkout external proj') {
-        print params
         git branch: "${params.BRANCH}",
                 url: 'https://github.com/ZakharE/JavaQaSeptember2020.git'
     }
+
     stage('Run tests') {
         catchError {
             withMaven(jdk: '', maven: 'maven') {
@@ -15,6 +15,7 @@ node {
             }
         }
     }
+
     stage('Generate report') {
         withMaven(jdk: '', maven: 'maven') {
             sh "mvn allure:report"
@@ -43,6 +44,7 @@ node {
                         "Duration time: ${currentBuild.durationString}\n" +
                         "Branch name: ${params.BRANCH}"
     }
+
     stage("Archive artifacts") {
         archiveArtifacts artifacts: '**/target/', fingerprints: true
     }
