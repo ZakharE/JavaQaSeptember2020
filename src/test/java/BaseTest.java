@@ -1,3 +1,4 @@
+import com.codeborne.selenide.Selenide;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
@@ -9,8 +10,6 @@ import org.testng.annotations.BeforeTest;
 
 public class BaseTest {
     protected static final Logger logger = LogManager.getLogger(HomePageTest.class);
-    protected static WebDriver driver;
-    protected static final UserConfig cfg = ConfigFactory.create(UserConfig.class);
 
 
     @BeforeTest
@@ -18,20 +17,11 @@ public class BaseTest {
        createNewSession();
     }
 
-    @AfterTest
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-            logger.info("Driver was closed");
-        }
-    }
-
-    public WebDriver createNewSession() {
+    public void createNewSession() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get(cfg.hostname());
+//        driver.manage().window().maximize();
+//        driver.get(cfg.hostname());
         logger.info("Driver initiated");
-        return driver;
+        Selenide.open("https://events.epam.com/");
     }
 }
