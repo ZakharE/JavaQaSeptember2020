@@ -19,7 +19,6 @@ public class BaseTest {
 
     public void createNewSession() {
         WebDriverManager.chromedriver().setup();
-//        driver.manage().window().maximize();
 //        driver.get(cfg.hostname());
         logger.info("Driver initiated");
         Selenide.open("https://events.epam.com/");
