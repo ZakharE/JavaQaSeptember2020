@@ -12,8 +12,8 @@ node {
     stage('Run tests') {
         catchError {
             withMaven(jdk: '', maven: 'maven') {
-                sh "mvn clean test"+
-                        " -Dselenide.remote=${params.REMOTE}" +
+                sh "mvn clean test "+
+                        " -Dselenide.remote=${params.REMOTE}/wd/hub" +
                         " -Dselenide.browser=chrome" +
                         " -Dselenide.browserSize=1920x1080" +
                         " -Dselenide.enableVnc=true" +
