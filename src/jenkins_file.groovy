@@ -1,7 +1,7 @@
 properties([pipelineTriggers([githubPush()])])
-parameters{
-    string(name:"BRANCH", default:"final_project")
-    string(name:"REMOTE", default:"final_project")
+parameters {
+    string(name: "BRANCH", default: "final_project")
+    string(name: "REMOTE", default: "final_project")
 }
 node {
     stage('Checkout external proj') {
@@ -12,12 +12,14 @@ node {
     stage('Run tests') {
         catchError {
             withMaven(jdk: '', maven: 'maven') {
-                sh "mvn clean test "+
+                sh "mvn clean test " +
                         " -Dselenide.remote=${params.REMOTE}/wd/hub" +
                         " -Dselenide.browser=chrome" +
                         " -Dselenide.browserSize=1920x1080" +
-                        " -Dselenide.enableVnc=true" +
-                        " -Dselenide.enableVideo=true"
+                        " -Dselenide.capabilities.enableVnc=true" +
+                        " -Dselenide.capabilities.enableVideo=true" +
+                        " -Dsuite=parallel.xml"
+
             }
         }
     }
@@ -41,7 +43,7 @@ node {
 
     stage('Notify slack') {
         def stats = readJSON file: "${env.WORKSPACE}/target/site/allure-maven-plugin/widgets/summary.json"
-        def skipped = stats["statistic"]["Skipped"] == null ? 0: stats["statistic"]["Skipped"]
+        def skipped = stats["statistic"]["Skipped"] == null ? 0 : stats["statistic"]["Skipped"]
         slackSend channel: 'slack_build_notify',
                 message: "${env.JOB_NAME} Build # ${env.BUILD_NUMBER} - ${currentBuild.currentResult}\n".replace('and counting', '') +
                         "Passed: ${stats["statistic"]["passed"]}\n" +
