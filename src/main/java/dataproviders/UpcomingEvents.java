@@ -2,7 +2,6 @@ package dataproviders;
 
 import org.testng.annotations.DataProvider;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 public class UpcomingEvents {

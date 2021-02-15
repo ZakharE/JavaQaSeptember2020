@@ -1,5 +1,4 @@
 import com.codeborne.selenide.CollectionCondition;
-import com.codeborne.selenide.ElementsCollection;
 import constants.EventTime;
 import dataproviders.EventCard;
 import dataproviders.UpcomingEvents;
@@ -52,21 +51,38 @@ public class HomePageTest extends BaseTest {
         eventsPage.getEventCards().shouldHaveSize(eventSize);
     }
 
-    @Test
+    @Test(description = "Check detailed event info")
     public void checkDetailedEventInfo() {
         EventsPage eventsPage = new MainPage()
                 .closePopUps()
                 .goToUpcomingEventsPage();
         eventsPage.getEventCards().shouldHave(CollectionCondition.sizeGreaterThan(0));
         eventsPage.openFirstEvent()
-                .hasSaveToCalendarButton();
+                .hasSaveToCalendarButton()
+                .hasName("Check-in app guideThank you for being a volunteer!");
     }
 
-//5. Просмотр детальной информации о мероприятии:
-//5.1 Пользователь переходит на вкладку events
-//5.2 Пользователь нажимает на Upcoming Events
-//5.3 На странице отображаются карточки предстоящих мероприятий.
-//5.4 Пользователь нажимает на любую карточку
-//5.5 Происходит переход на страницу с подробной информацией о мероприятии
-//5.6 На странице с информацией о мероприятии отображается блок с кнопкой для регистрации, дата и время, программа мероприятия.
+    @Test(description = "Check query search")
+    public void checkQuerySearchrForVideos() {
+        new MainPage()
+                .closePopUps()
+                .goToVideoPage()
+                .inputSearchQuery("QA")
+                .eventCardsShouldContainKeyword("QA");
+    }
+
+    @Test(description = "Check video search filters")
+    public void checkFiltersForVideoPage() {
+        String language = "ENGLISH";
+        String location = "Belarus";
+        String category = "Testing";
+        new MainPage()
+                .closePopUps()
+                .goToVideoPage()
+                .openFilters()
+                .selectLanguage(language)
+                .selectLocation(location)
+                .selectCategory(category)
+                .checkAllCardsHas(language, location, category);
+    }
 }
