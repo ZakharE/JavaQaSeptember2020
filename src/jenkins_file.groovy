@@ -18,7 +18,7 @@ node {
                         " -Dselenide.browserSize=1920x1080" +
                         " -Dselenide.capabilities.enableVnc=true" +
                         " -Dselenide.capabilities.enableVideo=true" +
-                        " -Dsuite=parallel.xml"
+                        " -Dsuite.name=parallel"
 
             }
         }
