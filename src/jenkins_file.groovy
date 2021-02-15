@@ -13,11 +13,11 @@ node {
         catchError {
             withMaven(jdk: '', maven: 'maven') {
                 sh "mvn clean test"+
-                        "-Dselenide.remote=${params.REMOTE}" +
-                        "-Dselenide.browser=chrome" +
-                        "-Dselenide.browserSize=1920x1080" +
-                        "-Dselenide.enableVnc=true" +
-                        "-Dselenide.enableVideo=true"
+                        " -Dselenide.remote=${params.REMOTE}" +
+                        " -Dselenide.browser=chrome" +
+                        " -Dselenide.browserSize=1920x1080" +
+                        " -Dselenide.enableVnc=true" +
+                        " -Dselenide.enableVideo=true"
             }
         }
     }
